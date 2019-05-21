@@ -1,11 +1,15 @@
-﻿using System;
+﻿using ImagesStorage;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -25,11 +29,50 @@ namespace ImagesApp
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        
+        IImageStorage _imageStorage;
 
         public MainPage()
         {
             this.InitializeComponent();
-        }        
+
+            _imageStorage = new ImageStorage();
+        }
+
+        private async void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            var picker = new Windows.Storage.Pickers.FileOpenPicker();
+            picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
+            picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
+            picker.FileTypeFilter.Add(".jpg");
+            picker.FileTypeFilter.Add(".jpeg");
+            picker.FileTypeFilter.Add(".png");
+
+            Windows.Storage.StorageFile file = await picker.PickSingleFileAsync();
+
+            if (file != null)
+            {
+                var bytes = await GetBytesAsync(file);
+
+                await _imageStorage.UploadImageAsync(bytes, file.Name);
+
+
+            }
+        }
+
+        private async Task<byte[]> GetBytesAsync(StorageFile file)
+        {
+            byte[] fileBytes = null;
+            if (file == null) return null;
+            using (var stream = await file.OpenReadAsync())
+            {
+                fileBytes = new byte[stream.Size];
+                using (var reader = new DataReader(stream))
+                {
+                    await reader.LoadAsync((uint)stream.Size);
+                    reader.ReadBytes(fileBytes);
+                }
+            }
+            return fileBytes;
+        }
     }
 }
