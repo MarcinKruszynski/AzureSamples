@@ -7,7 +7,7 @@ namespace ImagesStorage
 {
     public class ImageStorage : IImageStorage
     {
-        public async Task UploadImageAsync(byte[] bytes, string blobName)
+        public async Task<CloudBlockBlob> UploadImageAsync(byte[] bytes, string blobName)
         {
             var cloudStorageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=emkastorage;AccountKey=xNI29xYCrLT7szPqHnZ4Lc+72kz6erRpT867SCkBvomqO5A3T2JqWNi5h3HsdvvAUZ0UqH2AXkXxI9+vO2Hj8w==;EndpointSuffix=core.windows.net");            
 
@@ -20,6 +20,8 @@ namespace ImagesStorage
             var cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(blobName);
 
             await cloudBlockBlob.UploadFromByteArrayAsync(bytes, 0, bytes.Length);
+
+            return cloudBlockBlob;
         }
 
         public async Task<bool> CheckIfBlobExistsAsync(string blobName)

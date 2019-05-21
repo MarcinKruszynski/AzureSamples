@@ -1,6 +1,7 @@
 ﻿using ImagesStorage;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -31,9 +32,39 @@ namespace ImagesApp
 
         IImageStorage _imageStorage;
 
+        private ObservableCollection<ImageBlob> _images;
+
+        public ObservableCollection<ImageBlob> Images
+        {
+            get { return _images; }
+            set
+            {
+                _images = value;
+
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Images"));
+            }
+        }
+
+        private ImageBlob _selectedImage;
+
+        public ImageBlob SelectedImage
+        {
+            get { return _selectedImage; }
+            set
+            {
+                _selectedImage = value;
+
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedImage"));
+            }
+        }
+
         public MainPage()
         {
             this.InitializeComponent();
+
+            DataContext = this;
+
+            Images = new ObservableCollection<ImageBlob>();
 
             _imageStorage = new ImageStorage();
         }
@@ -53,9 +84,13 @@ namespace ImagesApp
             {
                 var bytes = await GetBytesAsync(file);
 
-                await _imageStorage.UploadImageAsync(bytes, file.Name);
+                var cloudBlockBlob = await _imageStorage.UploadImageAsync(bytes, file.Name);
 
+                var item = new ImageBlob { BlobName = cloudBlockBlob.Name, BlobUri = cloudBlockBlob.Uri.ToString() };
 
+                Images.Add(item);
+
+                SelectedImage = item;
             }
         }
 

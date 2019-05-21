@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}">
+    <Grid DataContext="{Binding}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -20,7 +20,7 @@
         <StackPanel Grid.ColumnSpan="2">
             <Button x:Name="addButton" Margin="10" Click="AddButton_Click">Dodaj</Button>
         </StackPanel>
-        <ListView Margin="10,0,10,10" Grid.Row="1" ItemsSource="{Binding Images}" SelectedItem="{Binding SelectedImage}"/>
+        <ListView Margin="10,0,10,10" Grid.Row="1" ItemsSource="{Binding Images}" SelectedItem="{Binding SelectedImage}" DisplayMemberPath="BlobName"/>
         <Grid Grid.Column="1" Grid.Row="1" Margin="10,0,10,10" DataContext="{Binding SelectedImage}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
