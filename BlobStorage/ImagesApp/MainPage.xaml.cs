@@ -58,6 +58,8 @@ namespace ImagesApp
             }
         }
 
+        public string Prefix { get; set; }
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -67,6 +69,22 @@ namespace ImagesApp
             Images = new ObservableCollection<ImageBlob>();
 
             _imageStorage = new ImageStorage();
+
+            this.Loaded += MainPage_Loaded;
+        }
+
+        private async void MainPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            await LoadImageListAsync();
+        }
+
+        private async Task LoadImageListAsync()
+        {
+            var items = await _imageStorage.ListImageBlobsAsync(Prefix);
+
+            Images = new ObservableCollection<ImageBlob>(items.Select(i => new ImageBlob { BlobName = i.Name, BlobUri = i.Uri.ToString() }));
+
+            SelectedImage = Images.FirstOrDefault();
         }
 
         private async void AddButton_Click(object sender, RoutedEventArgs e)
@@ -113,6 +131,16 @@ namespace ImagesApp
                 }
             }
             return fileBytes;
+        }
+
+        private async void SearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            await LoadImageListAsync();
+        }
+
+        private void DownloadButton_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }
