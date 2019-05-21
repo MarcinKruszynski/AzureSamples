@@ -82,15 +82,20 @@ namespace ImagesApp
 
             if (file != null)
             {
-                var bytes = await GetBytesAsync(file);
+                var blobExists = await _imageStorage.CheckIfBlobExistsAsync(file.Name);
 
-                var cloudBlockBlob = await _imageStorage.UploadImageAsync(bytes, file.Name);
+                if (!blobExists)
+                {
+                    var bytes = await GetBytesAsync(file);
 
-                var item = new ImageBlob { BlobName = cloudBlockBlob.Name, BlobUri = cloudBlockBlob.Uri.ToString() };
+                    var cloudBlockBlob = await _imageStorage.UploadImageAsync(bytes, file.Name);
 
-                Images.Add(item);
+                    var item = new ImageBlob { BlobName = cloudBlockBlob.Name, BlobUri = cloudBlockBlob.Uri.ToString() };
 
-                SelectedImage = item;
+                    Images.Add(item);
+
+                    SelectedImage = item;
+                }
             }
         }
 

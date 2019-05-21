@@ -9,13 +9,7 @@ namespace ImagesStorage
     {
         public async Task<CloudBlockBlob> UploadImageAsync(byte[] bytes, string blobName)
         {
-            var cloudStorageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=emkastorage;AccountKey=xNI29xYCrLT7szPqHnZ4Lc+72kz6erRpT867SCkBvomqO5A3T2JqWNi5h3HsdvvAUZ0UqH2AXkXxI9+vO2Hj8w==;EndpointSuffix=core.windows.net");            
-
-            var cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
-
-            var cloudBlobContainer = cloudBlobClient.GetContainerReference("images");
-
-            await cloudBlobContainer.CreateIfNotExistsAsync(BlobContainerPublicAccessType.Blob, null, null);
+            CloudBlobContainer cloudBlobContainer = await GetImagesContainerAsync();
 
             var cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(blobName);
 
@@ -24,9 +18,25 @@ namespace ImagesStorage
             return cloudBlockBlob;
         }
 
+        private static async Task<CloudBlobContainer> GetImagesContainerAsync()
+        {
+            var cloudStorageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=emkastorage;AccountKey=xNI29xYCrLT7szPqHnZ4Lc+72kz6erRpT867SCkBvomqO5A3T2JqWNi5h3HsdvvAUZ0UqH2AXkXxI9+vO2Hj8w==;EndpointSuffix=core.windows.net");
+
+            var cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
+
+            var cloudBlobContainer = cloudBlobClient.GetContainerReference("images");
+
+            await cloudBlobContainer.CreateIfNotExistsAsync(BlobContainerPublicAccessType.Blob, null, null);
+            return cloudBlobContainer;
+        }
+
         public async Task<bool> CheckIfBlobExistsAsync(string blobName)
         {
-            return false;
+            CloudBlobContainer cloudBlobContainer = await GetImagesContainerAsync();
+
+            var cloudBlockBlob = cloudBlobContainer.GetBlockBlobReference(blobName);
+
+            return await cloudBlockBlob.ExistsAsync();            
         }
     }
 }
