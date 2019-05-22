@@ -70,7 +70,7 @@ namespace ImagesStorage
 
         public async Task DeleteImageAsync(CloudBlockBlob cloudBlockBlob)
         {
-
+            await cloudBlockBlob.DeleteAsync();
         }
     }
 }

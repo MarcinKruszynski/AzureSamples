@@ -159,5 +159,17 @@ namespace ImagesApp
                 }
             }
         }
+
+        private async void RemoveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedImage == null)
+                return;
+
+            await _imageStorage.DeleteImageAsync(SelectedImage.Blob);
+
+            Images.Remove(SelectedImage);
+
+            SelectedImage = Images.FirstOrDefault();
+        }
     }
 }

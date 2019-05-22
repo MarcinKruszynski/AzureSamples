@@ -32,7 +32,10 @@
             </Grid.RowDefinitions>
             <TextBox Text="{Binding BlobName}" Header="Blob name" IsReadOnly="True"/>
             <TextBox Grid.Row="1" Margin="0,10,0,0" Text="{Binding BlobUri}" Header="Blob URI" IsReadOnly="True"/>
-            <Button x:Name="downloadButton" Grid.Row="2" Margin="0,20,0,0" Click="DownloadButton_Click">Download</Button>
+            <StackPanel Grid.Row="2" Margin="0,20,0,0" Orientation="Horizontal">
+                <Button x:Name="downloadButton" Click="DownloadButton_Click">Download</Button>
+                <Button x:Name="removeButton" Margin="20,0,0,0" Click="RemoveButton_Click">Remove</Button>
+            </StackPanel>            
             <Image Grid.Row="3" Margin="50" Source="{Binding BlobUri}"/>
         </Grid>
     </Grid>
