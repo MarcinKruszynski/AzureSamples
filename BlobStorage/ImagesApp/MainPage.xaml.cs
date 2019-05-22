@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
+using Windows.Storage.Provider;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -82,7 +83,7 @@ namespace ImagesApp
         {
             var items = await _imageStorage.ListImageBlobsAsync(Prefix);
 
-            Images = new ObservableCollection<ImageBlob>(items.Select(i => new ImageBlob { BlobName = i.Name, BlobUri = i.Uri.ToString() }));
+            Images = new ObservableCollection<ImageBlob>(items.Select(i => new ImageBlob { BlobName = i.Name, BlobUri = i.Uri.ToString(), Blob = i }));
 
             SelectedImage = Images.FirstOrDefault();
         }
@@ -108,7 +109,7 @@ namespace ImagesApp
 
                     var cloudBlockBlob = await _imageStorage.UploadImageAsync(bytes, file.Name);
 
-                    var item = new ImageBlob { BlobName = cloudBlockBlob.Name, BlobUri = cloudBlockBlob.Uri.ToString() };
+                    var item = new ImageBlob { BlobName = cloudBlockBlob.Name, BlobUri = cloudBlockBlob.Uri.ToString(), Blob = cloudBlockBlob };
 
                     Images.Add(item);
 
@@ -138,9 +139,25 @@ namespace ImagesApp
             await LoadImageListAsync();
         }
 
-        private void DownloadButton_Click(object sender, RoutedEventArgs e)
+        private async void DownloadButton_Click(object sender, RoutedEventArgs e)
         {
-            
+            if (SelectedImage == null)
+                return;
+
+            var savePicker = new Windows.Storage.Pickers.FileSavePicker();            
+            savePicker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
+            savePicker.FileTypeChoices.Add("Images", new List<string>() { ".jpg", ".jpeg", ".png" });
+            savePicker.SuggestedFileName = SelectedImage.BlobName;
+
+            Windows.Storage.StorageFile file = await savePicker.PickSaveFileAsync();
+
+            if (file != null)
+            {
+                using (var streamToWrite = await file.OpenStreamForWriteAsync())
+                {
+                    await _imageStorage.DownloadImageAsync(SelectedImage.Blob, streamToWrite);
+                }
+            }
         }
     }
 }

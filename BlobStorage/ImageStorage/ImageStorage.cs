@@ -2,6 +2,7 @@
 using Microsoft.Azure.Storage.Blob;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,7 +25,7 @@ namespace ImagesStorage
 
         private static async Task<CloudBlobContainer> GetImagesContainerAsync()
         {
-            var cloudStorageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=emkastorage;AccountKey=xNI29xYCrLT7szPqHnZ4Lc+72kz6erRpT867SCkBvomqO5A3T2JqWNi5h3HsdvvAUZ0UqH2AXkXxI9+vO2Hj8w==;EndpointSuffix=core.windows.net");
+            var cloudStorageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=emkastorage;AccountKey=/uYJN5BBH1oFjEvF30bBYsCCEluMekB1kJxlpHQk/USUlXug0pkkbyABsyb6rO2cktqmYfYbSS2tyBhS1EZFwA==;EndpointSuffix=core.windows.net");
             //var cloudStorageAccount = CloudStorageAccount.Parse("UseDevelopmentStorage=true");
 
             var cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();
@@ -60,6 +61,16 @@ namespace ImagesStorage
             while (token != null);            
 
             return cloudBlockBlobs;
+        }
+
+        public async Task DownloadImageAsync(CloudBlockBlob cloudBlockBlob, Stream targetStream)
+        {
+            await cloudBlockBlob.DownloadToStreamAsync(targetStream);
+        }
+
+        public async Task DeleteImageAsync(CloudBlockBlob cloudBlockBlob)
+        {
+
         }
     }
 }
