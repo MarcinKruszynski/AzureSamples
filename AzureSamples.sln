@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ImagesStorage", "BlobStorag
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImagesApp", "BlobStorage\ImagesApp\ImagesApp.csproj", "{77E24C74-E50D-49BC-B2D1-AD8FB2287620}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CosmosDbApp", "CosmosDbApp\CosmosDbApp.csproj", "{7FC206B5-6CA3-49A4-A8AF-70D0B0CEE193}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +95,26 @@ Global
 		{77E24C74-E50D-49BC-B2D1-AD8FB2287620}.Release|x86.ActiveCfg = Release|x86
 		{77E24C74-E50D-49BC-B2D1-AD8FB2287620}.Release|x86.Build.0 = Release|x86
 		{77E24C74-E50D-49BC-B2D1-AD8FB2287620}.Release|x86.Deploy.0 = Release|x86
+		{7FC206B5-6CA3-49A4-A8AF-70D0B0CEE193}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FC206B5-6CA3-49A4-A8AF-70D0B0CEE193}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FC206B5-6CA3-49A4-A8AF-70D0B0CEE193}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{7FC206B5-6CA3-49A4-A8AF-70D0B0CEE193}.Debug|ARM.Build.0 = Debug|Any CPU
+		{7FC206B5-6CA3-49A4-A8AF-70D0B0CEE193}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{7FC206B5-6CA3-49A4-A8AF-70D0B0CEE193}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{7FC206B5-6CA3-49A4-A8AF-70D0B0CEE193}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{7FC206B5-6CA3-49A4-A8AF-70D0B0CEE193}.Debug|x64.Build.0 = Debug|Any CPU
+		{7FC206B5-6CA3-49A4-A8AF-70D0B0CEE193}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7FC206B5-6CA3-49A4-A8AF-70D0B0CEE193}.Debug|x86.Build.0 = Debug|Any CPU
+		{7FC206B5-6CA3-49A4-A8AF-70D0B0CEE193}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FC206B5-6CA3-49A4-A8AF-70D0B0CEE193}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FC206B5-6CA3-49A4-A8AF-70D0B0CEE193}.Release|ARM.ActiveCfg = Release|Any CPU
+		{7FC206B5-6CA3-49A4-A8AF-70D0B0CEE193}.Release|ARM.Build.0 = Release|Any CPU
+		{7FC206B5-6CA3-49A4-A8AF-70D0B0CEE193}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{7FC206B5-6CA3-49A4-A8AF-70D0B0CEE193}.Release|ARM64.Build.0 = Release|Any CPU
+		{7FC206B5-6CA3-49A4-A8AF-70D0B0CEE193}.Release|x64.ActiveCfg = Release|Any CPU
+		{7FC206B5-6CA3-49A4-A8AF-70D0B0CEE193}.Release|x64.Build.0 = Release|Any CPU
+		{7FC206B5-6CA3-49A4-A8AF-70D0B0CEE193}.Release|x86.ActiveCfg = Release|Any CPU
+		{7FC206B5-6CA3-49A4-A8AF-70D0B0CEE193}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
