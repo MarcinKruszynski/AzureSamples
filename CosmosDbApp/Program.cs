@@ -43,7 +43,15 @@ namespace CosmosDbApp
                     }
                 };
 
-                var document1 = await client.CreateDocumentAsync(ProductsCollectionUri, document1Definition);
+                var options1 = new RequestOptions { PreTriggerInclude = new[] { "trgValidateProduct" } };
+
+                try
+                {
+                    var document1 = await client.CreateDocumentAsync(ProductsCollectionUri, document1Definition, options1);
+                }
+                catch(DocumentClientException ex)
+                {
+                }
 
                 //create document 2
                 var document2Definition = @"
