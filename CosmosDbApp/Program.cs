@@ -170,6 +170,8 @@ namespace CosmosDbApp
                 var options8 = new RequestOptions { PartitionKey = new PartitionKey("8903205189820") };
                 var result8 = await client.ExecuteStoredProcedureAsync<object>(uri8, options8, documentData);
                 var doc8 = result8.Response;
+                var doc8Object = JsonConvert.DeserializeObject(doc8.ToString());
+                var do8Name = doc8Object["name"];
             }
 
             Console.WriteLine("Hello World!");
