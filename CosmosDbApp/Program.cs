@@ -140,6 +140,13 @@ namespace CosmosDbApp
 
                 var requestOptions = new RequestOptions { PartitionKey = new PartitionKey(documentToRemove.productId) };
                 await client.DeleteDocumentAsync(documentToRemove._self, requestOptions);
+
+
+                //stored procedure 1
+                var uri7 = UriFactory.CreateStoredProcedureUri("Products", "Products", "spHelloWorld");
+                var options7 = new RequestOptions { PartitionKey = new PartitionKey(string.Empty) };
+                var result7 = await client.ExecuteStoredProcedureAsync<string>(uri7, options7);
+                var message7 = result7.Response;
             }
 
             Console.WriteLine("Hello World!");
