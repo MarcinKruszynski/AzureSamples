@@ -132,7 +132,8 @@ namespace CosmosDbApp
 
 
                 //replace document
-                sql = "SELECT * FROM c WHERE STARTSWITH(c.name, 'Kubek')";
+                //sql = "SELECT * FROM c WHERE STARTSWITH(c.name, 'Kubek')";
+                sql = "SELECT * FROM c WHERE udf.udfRegEx(c.name, 'Kubek') != null";
                 var query5 = client.CreateDocumentQuery(ProductsCollectionUri, sql, options);
                 var document = query5.ToList().First();
 
