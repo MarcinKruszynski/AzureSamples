@@ -147,6 +147,29 @@ namespace CosmosDbApp
                 var options7 = new RequestOptions { PartitionKey = new PartitionKey(string.Empty) };
                 var result7 = await client.ExecuteStoredProcedureAsync<string>(uri7, options7);
                 var message7 = result7.Response;
+
+                //stored procedure 2
+                dynamic documentData = new
+                {
+                    productId = "8903205189820",
+                    category = "Gadżety",
+                    name = "Zestaw Premium",
+                    price = "99.90",
+                    shipping = new
+                    {
+                        weight = 2,
+                        dimensions = new
+                        {
+                            width = 50,
+                            height = 50,
+                            depth = 2
+                        }
+                    }
+                };
+                var uri8 = UriFactory.CreateStoredProcedureUri("Products", "Products", "spAddProduct");
+                var options8 = new RequestOptions { PartitionKey = new PartitionKey("8903205189820") };
+                var result8 = await client.ExecuteStoredProcedureAsync<object>(uri8, options8, documentData);
+                var doc8 = result8.Response;
             }
 
             Console.WriteLine("Hello World!");

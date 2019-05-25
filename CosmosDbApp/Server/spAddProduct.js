@@ -1,6 +1,6 @@
 ﻿function spAddProduct(docToCreate) {
-    if (docToCreate.shipping === undefined || docToCreate.shipping.width === undefined) {
-        throw new Error('Expected document to contain docToCreate.shipping.width.');
+    if (docToCreate.shipping === undefined || docToCreate.shipping.dimensions === undefined || docToCreate.shipping.dimensions.width === undefined) {
+        throw new Error('Expected document to contain docToCreate.shipping.dimensions.width.');
     }
 
     var context = getContext();
