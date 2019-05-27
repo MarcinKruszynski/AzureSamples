@@ -52,14 +52,14 @@ namespace RedisCacheApp
             }
 
 
-            //using (var redisClient = new RedisClient(""))
-            //{                
-            //    string key = "test:expire";
-                
-            //    redisClient.SetValue(key, "bbb");
-               
-            //    redisClient.Expire(key, 15);
-            //}
+            using (var redisClient = new RedisClient(""))
+            {
+                string key = "test:expire";
+
+                redisClient.SetValue(key, "bbb");
+
+                redisClient.Expire(key, 15);
+            }
 
             Console.WriteLine("Hello World!");
         }
