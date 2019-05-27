@@ -1,4 +1,5 @@
-﻿using StackExchange.Redis;
+﻿using ServiceStack.Redis;
+using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace RedisCacheApp
     {
         static async Task Main(string[] args)
         {
-            string connectionString = "emkaredis.redis.cache.windows.net:6380,password=lfpPyiT0G2eBXyQVA57+mJbLSBSYR4Klvvrg6biVLMs=,ssl=True,abortConnect=False";
+            string connectionString = "";
 
             using (var cache = ConnectionMultiplexer.Connect(connectionString))
             {
@@ -49,6 +50,16 @@ namespace RedisCacheApp
                 var result = await db.ExecuteAsync("ping");
                 Console.WriteLine($"PING = {result.Type} : {result}");
             }
+
+
+            //using (var redisClient = new RedisClient(""))
+            //{                
+            //    string key = "test:expire";
+                
+            //    redisClient.SetValue(key, "bbb");
+               
+            //    redisClient.Expire(key, 15);
+            //}
 
             Console.WriteLine("Hello World!");
         }

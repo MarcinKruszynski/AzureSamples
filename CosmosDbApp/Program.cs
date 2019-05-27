@@ -12,11 +12,11 @@ namespace CosmosDbApp
     {
         //partition key: /productId
 
-        const string endpoint = "https://emkacosmos.documents.azure.com:443/";
-        const string masterKey = "ITKPb0CbCqRVjwzOgKbixwejY4XqbCNi7c4VENjb0uErqjttRbN7SbNZwPbpac0whxbksPyXBxJ7okPcgeSURQ==";
+        const string endpoint = "";
+        const string masterKey = "";
 
-        //const string endpoint = "https://localhost:8081";
-        //const string masterKey = "C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
+        //const string endpoint = "";
+        //const string masterKey = "";
 
         public static Uri ProductsCollectionUri => UriFactory.CreateDocumentCollectionUri("Products", "Products");
 

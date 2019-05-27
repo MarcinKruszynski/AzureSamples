@@ -25,7 +25,7 @@ namespace ImagesStorage
 
         private static async Task<CloudBlobContainer> GetImagesContainerAsync()
         {
-            var cloudStorageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=emkastorage;AccountKey=/uYJN5BBH1oFjEvF30bBYsCCEluMekB1kJxlpHQk/USUlXug0pkkbyABsyb6rO2cktqmYfYbSS2tyBhS1EZFwA==;EndpointSuffix=core.windows.net");
+            var cloudStorageAccount = CloudStorageAccount.Parse("");
             //var cloudStorageAccount = CloudStorageAccount.Parse("UseDevelopmentStorage=true");
 
             var cloudBlobClient = cloudStorageAccount.CreateCloudBlobClient();

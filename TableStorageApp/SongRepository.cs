@@ -11,9 +11,9 @@ namespace TableStorageApp
 
         public SongRepository()
         {
-            //var storageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=emkastorage;AccountKey=gkDT876QKKBoYLT/ghPmQU8TU+TnhWErtr0d9al0vq3bQftlWYhT6hnn7Ygxakf1r6m8QL5kia3lBftB0VZM5A==;EndpointSuffix=core.windows.net");
+            //var storageAccount = CloudStorageAccount.Parse("");
 
-            var storageAccount = CloudStorageAccount.Parse("DefaultEndpointsProtocol=https;AccountName=emkacosmos;AccountKey=3Ai2tZsCCbJKvK1ud5msljU68JTibmU4buXlhimWlh8iMS1ZucLFzyg1SXmkuLrxtj1NE8YgOtBejCE6xvaI4g==;TableEndpoint=https://emkacosmos.table.cosmos.azure.com:443/");
+            var storageAccount = CloudStorageAccount.Parse("");
 
             var tableClient = storageAccount.CreateCloudTableClient();
 
