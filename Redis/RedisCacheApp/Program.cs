@@ -10,7 +10,7 @@ namespace RedisCacheApp
     {
         static async Task Main(string[] args)
         {
-            string connectionString = "";
+            string connectionString = "emkaredis.redis.cache.windows.net:6380,password=CwfNimcCA19cAZUKKCkHPldAS6919Q3qSwFBrIZdUSU=,ssl=True,abortConnect=False";
 
             using (var cache = ConnectionMultiplexer.Connect(connectionString))
             {
@@ -52,7 +52,7 @@ namespace RedisCacheApp
             }
 
 
-            using (var redisClient = new RedisClient(""))
+            using (var redisClient = new RedisClient("password@host:port?ssl=true"))
             {
                 string key = "test:expire";
 
