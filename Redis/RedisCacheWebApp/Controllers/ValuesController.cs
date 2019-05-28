@@ -49,7 +49,10 @@ namespace RedisCacheWebApp.Controllers
                     }                    
                 };
 
-                _cache.SetString("baskets", JsonConvert.SerializeObject(baskets));
+                var options = new DistributedCacheEntryOptions();
+                options.SetAbsoluteExpiration(new TimeSpan(0, 0, 30));
+
+                _cache.SetString("baskets", JsonConvert.SerializeObject(baskets), options);
             }
 
             return Ok(baskets);
