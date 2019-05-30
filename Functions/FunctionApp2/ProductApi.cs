@@ -9,18 +9,19 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.WindowsAzure.Storage.Table;
+using Microsoft.WindowsAzure.Storage;
 
 namespace FunctionApp2
 {
     public static class ProductApi
     {
-        //temp
-        static List<Product> items = new List<Product>();
-
-
+        
         [FunctionName("AddProduct")]
         public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "products")] HttpRequest req, ILogger log)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "products")] HttpRequest req, 
+            [Table("products", Connection = "AzureWebJobsStorage")] IAsyncCollector<ProductTableEntity> productTable,
+            ILogger log)
         {
             log.LogInformation("Adding a new product.");  
 
@@ -36,72 +37,115 @@ namespace FunctionApp2
                 StockQuantity = data.StockQuantity
             };
 
-            //temp
-            items.Add(product);
+            await productTable.AddAsync(new ProductTableEntity
+            {
+                PartitionKey = "PRODUCT",
+                RowKey = product.Id,
+                Name = product.Name,
+                Price = product.Price,
+                StockQuantity = product.StockQuantity
+            });            
 
             return new OkObjectResult(product);
         }
 
 
         [FunctionName("GetProducts")]
-        public static IActionResult GetProducts(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "products")] HttpRequest req, ILogger log)
+        public static async Task<IActionResult> GetProducts(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "products")] HttpRequest req,
+            [Table("products", Connection = "AzureWebJobsStorage")] CloudTable productTable,
+            ILogger log)
         {
             log.LogInformation("Getting product list.");
 
-            //temp
-            return new OkObjectResult(items);
+            var query = new TableQuery<ProductTableEntity>();
+            var segment = await productTable.ExecuteQuerySegmentedAsync(query, null);
+            
+            return new OkObjectResult(segment
+                .Select(item => new Product
+                {
+                    Id = item.RowKey,
+                    Name = item.Name,
+                    Price = item.Price,
+                    StockQuantity = item.StockQuantity
+                }));
         }
 
 
         [FunctionName("GetProduct")]
         public static IActionResult GetProduct(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "products/{id}")] HttpRequest req, ILogger log, string id)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "products/{id}")] HttpRequest req,
+            [Table("products", "PRODUCT", "{id}", Connection = "AzureWebJobsStorage")] ProductTableEntity product,
+            ILogger log, string id)
         {
-            //temp
-            var product = items.FirstOrDefault(p => p.Id == id);
+            log.LogInformation("Getting product by id.");            
 
             if (product == null)
                 return new NotFoundResult();
 
-            return new OkObjectResult(product);
+            return new OkObjectResult(new Product
+            {
+                Id = product.RowKey,
+                Name = product.Name,
+                Price = product.Price,
+                StockQuantity = product.StockQuantity
+            });
         }
 
 
         [FunctionName("UpdateProduct")]
         public static async Task<IActionResult> UpdateProduct(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "products/{id}")] HttpRequest req, ILogger log, string id)
+            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "products/{id}")] HttpRequest req,
+            [Table("products", Connection = "AzureWebJobsStorage")] CloudTable productTable,
+            ILogger log, string id)
         {
-            //temp
-            var product = items.FirstOrDefault(p => p.Id == id);
-
-            if (product == null)
-                return new NotFoundResult();
-
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-
             var data = JsonConvert.DeserializeObject<ProductData>(requestBody);
+            var findOperation = TableOperation.Retrieve<ProductTableEntity>("PRODUCT", id);
+            var findResult = await productTable.ExecuteAsync(findOperation);
+            if (findResult.Result == null)
+            {
+                return new NotFoundResult();
+            }
+            var existingRow = (ProductTableEntity)findResult.Result;
+            existingRow.Name = data.Name;
+            existingRow.Price = data.Price;
+            existingRow.StockQuantity = data.StockQuantity;
 
-            product.Name = data.Name;
-            product.Price = data.Price;
-            product.StockQuantity = data.StockQuantity;
+            var replaceOperation = TableOperation.Replace(existingRow);
+            await productTable.ExecuteAsync(replaceOperation);            
 
-            return new OkObjectResult(product);
+            return new OkObjectResult(new Product
+            {
+                Id = existingRow.RowKey,
+                Name = existingRow.Name,
+                Price = existingRow.Price,
+                StockQuantity = existingRow.StockQuantity
+            });
         }
 
 
         [FunctionName("DeleteProduct")]
-        public static IActionResult DeleteProduct(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "products/{id}")] HttpRequest req, ILogger log, string id)
+        public static async Task<IActionResult> DeleteProduct(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "products/{id}")] HttpRequest req,
+            [Table("products", Connection = "AzureWebJobsStorage")] CloudTable productTable,
+            ILogger log, string id)
         {
-            //temp
-            var product = items.FirstOrDefault(p => p.Id == id);
+            var deleteOperation = TableOperation.Delete(new TableEntity
+            {
+                PartitionKey = "PRODUCT",
+                RowKey = id,
+                ETag = "*"
+            });
 
-            if (product == null)
+            try
+            {
+                var deleteResult = await productTable.ExecuteAsync(deleteOperation);
+            }
+            catch(StorageException e) when (e.RequestInformation.HttpStatusCode == 404)
+            {
                 return new NotFoundResult();
-
-            //temp
-            items.Remove(product);
+            }            
 
             return new OkResult();
         }
