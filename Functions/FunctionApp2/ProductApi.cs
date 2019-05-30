@@ -21,6 +21,7 @@ namespace FunctionApp2
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "products")] HttpRequest req, 
             [Table("products", Connection = "AzureWebJobsStorage")] IAsyncCollector<ProductTableEntity> productTable,
+            [Queue("products", Connection = "AzureWebJobsStorage")] IAsyncCollector<Product> productQueue,
             ILogger log)
         {
             log.LogInformation("Adding a new product.");  
@@ -44,7 +45,9 @@ namespace FunctionApp2
                 Name = product.Name,
                 Price = product.Price,
                 StockQuantity = product.StockQuantity
-            });            
+            });
+
+            await productQueue.AddAsync(product);
 
             return new OkObjectResult(product);
         }
