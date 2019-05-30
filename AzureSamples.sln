@@ -23,7 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Functions", "Functions", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionApp", "Functions\FunctionApp\FunctionApp.csproj", "{5CF35334-2928-411E-A6D4-33CEFF22BCF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FunctionApp2", "Functions\FunctionApp2\FunctionApp2.csproj", "{678F7F94-A932-4B87-BCBF-CB3435D660AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionApp2", "Functions\FunctionApp2\FunctionApp2.csproj", "{678F7F94-A932-4B87-BCBF-CB3435D660AD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
