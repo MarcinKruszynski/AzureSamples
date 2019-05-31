@@ -1,0 +1,12 @@
+dotnet build -c Release
+
+docker build -t serverlessfuncs:v1 .
+
+docker run serverlessfuncs:v1
+
+$connStr = az storage account show-connection-string -g serverless-funcs-docker -n serverlessfuncsdocker -o tsv
+
+docker run -e AzureWebJobsStorage=$connStr -p 8080:80 serverlessfuncs:v1
+
+
+http://localhost:8080/api/Function1
