@@ -1,0 +1,39 @@
+{
+  "bindings": [
+    {
+      "authLevel": "function",
+      "type": "httpTrigger",
+      "direction": "in",
+      "name": "req",
+      "methods": [
+        "get",
+        "post"
+      ]
+    },
+    {
+      "type": "http",
+      "direction": "out",
+      "name": "res"
+    },
+    {
+      "type": "cosmosDB",
+      "direction": "in",
+      "name": "product",
+      "databaseName": "Products",
+      "collectionName": "Products",
+      "connectionStringSetting": "emkacosmosdb_DOCUMENTDB",
+      "id": "{id}",
+      "partitionKey": "{id}"
+    },
+    {
+      "type": "cosmosDB",
+      "direction": "out",
+      "name": "newProduct",
+      "databaseName": "Products",
+      "collectionName": "Products",
+      "createIfNotExists": "false",
+      "connectionStringSetting": "emkacosmosdb_DOCUMENTDB",
+      "partitionKey": "{id}"
+    }
+  ]
+}
