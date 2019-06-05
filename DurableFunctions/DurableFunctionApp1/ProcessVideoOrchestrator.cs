@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -20,17 +22,39 @@ namespace DurableFunctionApp1
             if (!context.IsReplaying)
                 log.LogInformation($"Before transcoding video.");
 
-            var transcodedLocation = await context.CallActivityAsync<string>("ProcessVideoOrchestrator_TranscodeVideo", videoLocation);
+            string transcodedLocation = null;
+            string thumbnailLocation = null;
+            string withIntroLocation = null;
 
-            if (!context.IsReplaying)
-                log.LogInformation($"Before extracting thumbnail.");
+            try
+            {
 
-            var thumbnailLocation = await context.CallActivityAsync<string>("ProcessVideoOrchestrator_ExtractThumbnail", transcodedLocation);
+                transcodedLocation = await context.CallActivityAsync<string>("ProcessVideoOrchestrator_TranscodeVideo", videoLocation);
 
-            if (!context.IsReplaying)
-                log.LogInformation($"Before prepending intro.");
+                if (!context.IsReplaying)
+                    log.LogInformation($"Before extracting thumbnail.");
 
-            var withIntroLocation = await context.CallActivityAsync<string>("ProcessVideoOrchestrator_PrependIntro", transcodedLocation);
+                thumbnailLocation = await context.CallActivityWithRetryAsync<string>(
+                                    "ProcessVideoOrchestrator_ExtractThumbnail",
+                                    new RetryOptions(TimeSpan.FromSeconds(5), 2) { Handle = ex => ex is InvalidOperationException },
+                                    transcodedLocation);
+
+                if (!context.IsReplaying)
+                    log.LogInformation($"Before prepending intro.");
+
+                withIntroLocation = await context.CallActivityAsync<string>("ProcessVideoOrchestrator_PrependIntro", transcodedLocation);
+            }
+            catch(Exception e)
+            {
+                if (!context.IsReplaying)
+                    log.LogInformation($"Caught an error from an activity: {e.Message}.");
+
+                return new
+                {
+                    Error = "Failed to process uploaded video",
+                    Message = e.Message
+                };
+            }
 
             return new
             {
@@ -47,13 +71,18 @@ namespace DurableFunctionApp1
 
             await Task.Delay(5000);
 
-            return "transcoded.mp4";
+            return $"{Path.GetFileNameWithoutExtension(inputVideo)}-transcoded.mp4";
         }
 
         [FunctionName("ProcessVideoOrchestrator_ExtractThumbnail")]
         public static async Task<string> ExtractThumbnail([ActivityTrigger] string inputVideo, ILogger log)
         {
             log.LogInformation($"Extracting Thumbnail {inputVideo}.");
+
+            if (inputVideo.Contains("error"))
+            {
+                throw new InvalidOperationException("Could not extract thumbnail");
+            }
 
             await Task.Delay(5000);
 
