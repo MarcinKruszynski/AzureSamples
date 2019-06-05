@@ -26,6 +26,7 @@ namespace DurableFunctionApp2
             string transcodedLocation = null;
             string thumbnailLocation = null;
             string withIntroLocation = null;
+            string approvalResult = "Unknown";
 
             try
             {
@@ -58,6 +59,19 @@ namespace DurableFunctionApp2
                     log.LogInformation($"Before prepending intro.");
 
                 withIntroLocation = await context.CallActivityAsync<string>("ProcessVideoOrchestrator_PrependIntro", transcodedLocation);
+
+                await context.CallActivityAsync("ProcessVideoOrchestrator_SendApprovalRequestEmail", withIntroLocation);
+
+                approvalResult = await context.WaitForExternalEvent<string>("ApprovalResult");
+
+                if (approvalResult == "Approved")
+                {
+                    await context.CallActivityAsync("ProcessVideoOrchestrator_PublishVideo", withIntroLocation);
+                }
+                else
+                {
+                    await context.CallActivityAsync("ProcessVideoOrchestrator_RejectVideo", withIntroLocation);
+                }
             }
             catch (Exception e)
             {
@@ -75,7 +89,8 @@ namespace DurableFunctionApp2
             {
                 Transcoded = transcodedLocation,
                 Thumbnail = thumbnailLocation,
-                WithIntro = withIntroLocation
+                WithIntro = withIntroLocation,
+                ApprovalResult = approvalResult
             };
         }
 
@@ -84,7 +99,7 @@ namespace DurableFunctionApp2
         {
             log.LogInformation($"Transcoding {inputVideo.Location} to {inputVideo.BitRate}.");
 
-            await Task.Delay(inputVideo.BitRate * 10);
+            await Task.Delay(inputVideo.BitRate);
 
             var transcodedLocation = $"{Path.GetFileNameWithoutExtension(inputVideo.Location)}-{inputVideo.BitRate}kbps.mp4";
 
@@ -118,6 +133,30 @@ namespace DurableFunctionApp2
             await Task.Delay(50000);
 
             return "withIntro.mp4";
+        }
+
+        [FunctionName("ProcessVideoOrchestrator_SendApprovalRequestEmail")]
+        public static async Task SendApprovalRequestEmail([ActivityTrigger] string inputVideo, ILogger log)
+        {
+            log.LogInformation($"Requesting approval for {inputVideo}.");
+
+            await Task.Delay(10000);            
+        }
+
+        [FunctionName("ProcessVideoOrchestrator_PublishVideo")]
+        public static async Task PublishVideo([ActivityTrigger] string inputVideo, ILogger log)
+        {
+            log.LogInformation($"Publishing {inputVideo}.");
+
+            await Task.Delay(10000);
+        }
+
+        [FunctionName("ProcessVideoOrchestrator_RejectVideo")]
+        public static async Task RejectVideo([ActivityTrigger] string inputVideo, ILogger log)
+        {
+            log.LogInformation($"Rejecting {inputVideo}.");
+
+            await Task.Delay(10000);
         }
 
         [FunctionName("ProcessVideoOrchestrator_HttpStart")]
