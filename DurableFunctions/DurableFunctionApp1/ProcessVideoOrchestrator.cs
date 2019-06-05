@@ -69,7 +69,7 @@ namespace DurableFunctionApp1
         {
             log.LogInformation($"Transcoding {inputVideo}.");
 
-            await Task.Delay(5000);
+            await Task.Delay(50000);
 
             return $"{Path.GetFileNameWithoutExtension(inputVideo)}-transcoded.mp4";
         }
@@ -84,7 +84,7 @@ namespace DurableFunctionApp1
                 throw new InvalidOperationException("Could not extract thumbnail");
             }
 
-            await Task.Delay(5000);
+            await Task.Delay(50000);
 
             return "thumbnail.png";
         }
@@ -94,7 +94,7 @@ namespace DurableFunctionApp1
         {
             log.LogInformation($"Appending intro to video {inputVideo}.");
 
-            await Task.Delay(5000);
+            await Task.Delay(50000);
 
             return "withIntro.mp4";
         }
