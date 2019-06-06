@@ -203,5 +203,46 @@ namespace DurableFunctionApp2
 
             return starter.CreateCheckStatusResponse(req, instanceId);
         }
+
+
+
+
+        [FunctionName("ProcessVideoOrchestrator_StartPeriodicTask")]
+        public static async Task<HttpResponseMessage> StartPeriodicTask(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = null)] HttpRequestMessage req,
+            [OrchestrationClient]DurableOrchestrationClient client,
+            ILogger log)
+        {
+            var instanceId = await client.StartNewAsync("ProcessVideoOrchestrator_PeriodicTask", 0);
+            return client.CreateCheckStatusResponse(req, instanceId);          
+        }
+
+
+        [FunctionName("ProcessVideoOrchestrator_PeriodicTask")]
+        public static async Task<int> PeriodicTask(
+            [OrchestrationTrigger] DurableOrchestrationContext context, ILogger log)
+        {
+            var timesRun = context.GetInput<int>();
+
+            timesRun++;
+
+            if (!context.IsReplaying)
+                log.LogInformation($"Starting periodic task activity {context.InstanceId}, {timesRun}");
+
+            await context.CallActivityAsync("ProcessVideoOrchestrator_PeriodicActivity", timesRun);
+
+            var nextRun = context.CurrentUtcDateTime.AddSeconds(30);
+            await context.CreateTimer(nextRun, CancellationToken.None);
+
+            context.ContinueAsNew(timesRun);
+
+            return timesRun;
+        }
+
+        [FunctionName("ProcessVideoOrchestrator_PeriodicActivity")]
+        public static void PeriodicActivity([ActivityTrigger] int timesRun, ILogger log)
+        {
+            log.LogInformation($"Running the periodic activity, times run = {timesRun}");            
+        }
     }
 }
