@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
@@ -62,7 +63,24 @@ namespace DurableFunctionApp2
 
                 await context.CallActivityAsync("ProcessVideoOrchestrator_SendApprovalRequestEmail", withIntroLocation);
 
-                approvalResult = await context.WaitForExternalEvent<string>("ApprovalResult");
+
+                using (var cts = new CancellationTokenSource())
+                {
+                    var timeoutAt = context.CurrentUtcDateTime.AddSeconds(30);
+                    var timeoutTask = context.CreateTimer(timeoutAt, cts.Token);
+                    var approvalTask = context.WaitForExternalEvent<string>("ApprovalResult");
+
+                    var winner = await Task.WhenAny(approvalTask, timeoutTask);
+                    if (winner == approvalTask)
+                    {
+                        approvalResult = approvalTask.Result;
+                        cts.Cancel();
+                    }
+                    else
+                    {
+                        approvalResult = "Timed Out";
+                    }
+                }                
 
                 if (approvalResult == "Approved")
                 {
