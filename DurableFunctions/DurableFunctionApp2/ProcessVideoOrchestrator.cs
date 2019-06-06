@@ -242,7 +242,7 @@ namespace DurableFunctionApp2
         [FunctionName("ProcessVideoOrchestrator_PeriodicActivity")]
         public static void PeriodicActivity([ActivityTrigger] int timesRun, ILogger log)
         {
-            log.LogInformation($"Running the periodic activity, times run = {timesRun}");            
+            log.LogWarning($"Running the periodic activity, times run = {timesRun}");            
         }
     }
 }
