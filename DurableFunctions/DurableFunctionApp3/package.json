@@ -1,0 +1,12 @@
+{
+  "name": "DurableFunctionApp3",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "test": "echo \"No tests yet...\""
+  },
+  "dependencies": {
+    "durable-functions": "^1.2.1"
+  },
+  "devDependencies": {}
+}
