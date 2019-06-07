@@ -6,7 +6,8 @@
     "test": "echo \"No tests yet...\""
   },
   "dependencies": {
-    "durable-functions": "^1.2.1"
+    "durable-functions": "^1.2.1",
+    "moment": "^2.24.0"
   },
   "devDependencies": {}
 }

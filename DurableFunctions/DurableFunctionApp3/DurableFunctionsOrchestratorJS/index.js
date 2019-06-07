@@ -10,12 +10,27 @@
  */
 
 const df = require("durable-functions");
+const moment = require("moment");
 
 module.exports = df.orchestrator(function* (context) {
     const outputs = [];
+
+    const deadline = moment.utc(context.df.currentUtcDateTime).add(200, "s");
+    const activityTask = context.df.waitForExternalEvent("Approval");
+    const timeoutTask = context.df.createTimer(deadline.toDate());
+
+    const winner = yield context.df.Task.any([activityTask, timeoutTask]);
+    if (winner === activityTask) {
+        outputs.push(yield context.df.callActivity("DurableFunctionsApproval", "Approved"));
+    }
+    else
+    {
+        outputs.push(yield context.df.callActivity("DurableFunctionsEscalation", "Head of department"));
+    }
     
-    outputs.push(yield context.df.callActivity("DurableFunctionsApproval", "Approved"));
-    outputs.push(yield context.df.callActivity("DurableFunctionsApproval", "Rejected"));
+    if (!timeoutTask.isCompleted) {        
+        timeoutTask.cancel();
+    }
     
     return outputs;
 });
