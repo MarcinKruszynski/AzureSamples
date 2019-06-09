@@ -7,3 +7,4 @@ My experiments with Azure:
 4. Azure Cache for Redis
 5. Azure Functions
 6. Durable Functions
+7. Azure Queue Storage 
