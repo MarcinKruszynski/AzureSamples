@@ -8,7 +8,7 @@ namespace ServiceBusLib
 {
     public static class ServiceBusUtils
     {
-        const string ServiceBusConnectionString = "";
+        const string ServiceBusConnectionString = "Endpoint=sb://emkaservicebusapp.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=tzOSSvOoEi4DocnUOCmNuHYBugPEUSfS/ByxUAylI7U=";
         const string QueueName = "salesmessages";
         static IQueueClient queueClient;
 
@@ -16,12 +16,12 @@ namespace ServiceBusLib
 
         public static async Task SendMessage(string message)
         {
-            queueClient = new QueueClient(ServiceBusConnectionString, QueueName);
+            var queueClient = new QueueClient(ServiceBusConnectionString, QueueName);
            
             var encodedMessage = new Message(Encoding.UTF8.GetBytes(message));
             await queueClient.SendAsync(encodedMessage);
 
-            await queueClient.CloseAsync();
+            await queueClient.CloseAsync();            
         }
 
 
@@ -31,9 +31,7 @@ namespace ServiceBusLib
 
             queueClient = new QueueClient(ServiceBusConnectionString, QueueName);
 
-            RegisterMessageHandler();
-
-            await queueClient.CloseAsync();
+            RegisterMessageHandler();            
         }
 
         static void RegisterMessageHandler()
@@ -55,7 +53,7 @@ namespace ServiceBusLib
 
             action?.Invoke(body);
 
-            await queueClient.CompleteAsync(message.SystemProperties.LockToken);
+            await queueClient.CompleteAsync(message.SystemProperties.LockToken);            
         }
 
         static Task ExceptionReceivedHandler(ExceptionReceivedEventArgs exceptionReceivedEventArgs)
@@ -67,6 +65,12 @@ namespace ServiceBusLib
             Console.WriteLine($"- Entity Path: {context.EntityPath}");
             Console.WriteLine($"- Executing Action: {context.Action}");
             return Task.CompletedTask;
+        }
+
+        public static async Task CloseQueue()
+        {
+            if (queueClient != null)
+                await queueClient.CloseAsync();
         }
     }
 }

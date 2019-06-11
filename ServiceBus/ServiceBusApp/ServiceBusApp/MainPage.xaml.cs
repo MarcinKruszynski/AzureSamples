@@ -1,4 +1,8 @@
 ﻿using ServiceBusLib;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -11,19 +15,41 @@ namespace ServiceBusApp
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        public ObservableCollection<string> ReadQueueItems { get; set; }
+
         public MainPage()
         {
+            this.DataContext = this;
+
             this.InitializeComponent();
+
+            ReadQueueItems = new ObservableCollection<string>();
         }        
 
         private async void SendQueue_Click(object sender, RoutedEventArgs e)
         {
             await ServiceBusUtils.SendMessage(sendQueueTxt.Text);
+
+            sendQueueTxt.Text = "";
         }
 
         private async void ReadQueue_Click(object sender, RoutedEventArgs e)
         {
-            await ServiceBusUtils.ReceiveMessage(text => readQueueTxt.Text = text);
+            await ServiceBusUtils.ReceiveMessage(UpdateUI);
+        }
+
+        private void UpdateUI(string text)
+        {
+            _ = Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+               () =>
+               {
+                   ReadQueueItems.Add(text);
+               });
+        }
+
+        private async void Page_Unloaded(object sender, RoutedEventArgs e)
+        {
+            await ServiceBusUtils.CloseQueue();
         }
     }
 }
