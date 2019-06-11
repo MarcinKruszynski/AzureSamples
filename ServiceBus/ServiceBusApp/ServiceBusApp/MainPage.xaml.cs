@@ -45,11 +45,6 @@ namespace ServiceBusApp
                {
                    ReadQueueItems.Add(text);
                });
-        }
-
-        private async void Page_Unloaded(object sender, RoutedEventArgs e)
-        {
-            await ServiceBusUtils.CloseQueue();
-        }
+        }        
     }
 }

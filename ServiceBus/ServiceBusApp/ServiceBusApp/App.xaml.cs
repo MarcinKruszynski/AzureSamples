@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ServiceBusLib;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -90,9 +91,12 @@ namespace ServiceBusApp
         /// </summary>
         /// <param name="sender">The source of the suspend request.</param>
         /// <param name="e">Details about the suspend request.</param>
-        private void OnSuspending(object sender, SuspendingEventArgs e)
+        private async void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
+
+            await ServiceBusUtils.CloseQueue();
+
             //TODO: Save application state and stop any background activity
             deferral.Complete();
         }
