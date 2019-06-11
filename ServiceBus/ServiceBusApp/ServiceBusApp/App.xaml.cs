@@ -96,6 +96,7 @@ namespace ServiceBusApp
             var deferral = e.SuspendingOperation.GetDeferral();
 
             await ServiceBusUtils.CloseQueue();
+            await ServiceBusUtils.CloseSubscription();
 
             //TODO: Save application state and stop any background activity
             deferral.Complete();

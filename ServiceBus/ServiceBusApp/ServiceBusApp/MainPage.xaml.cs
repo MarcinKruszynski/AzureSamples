@@ -17,6 +17,8 @@ namespace ServiceBusApp
     {
         public ObservableCollection<string> ReadQueueItems { get; set; }
 
+        public ObservableCollection<string> ReadSubscriptionItems { get; set; }
+
         public MainPage()
         {
             this.DataContext = this;
@@ -24,6 +26,8 @@ namespace ServiceBusApp
             this.InitializeComponent();
 
             ReadQueueItems = new ObservableCollection<string>();
+
+            ReadSubscriptionItems = new ObservableCollection<string>();
         }        
 
         private async void SendQueue_Click(object sender, RoutedEventArgs e)
@@ -33,9 +37,9 @@ namespace ServiceBusApp
             sendQueueTxt.Text = "";
         }
 
-        private async void ReadQueue_Click(object sender, RoutedEventArgs e)
+        private void ReadQueue_Click(object sender, RoutedEventArgs e)
         {
-            await ServiceBusUtils.ReceiveMessage(UpdateUI);
+            ServiceBusUtils.ReceiveMessage(UpdateUI);
         }
 
         private void UpdateUI(string text)
@@ -45,6 +49,29 @@ namespace ServiceBusApp
                {
                    ReadQueueItems.Add(text);
                });
-        }        
+        }
+
+
+
+        private async void SendTopic_Click(object sender, RoutedEventArgs e)
+        {
+            await ServiceBusUtils.SendMessageToTopic(sendTopicTxt.Text);
+
+            sendTopicTxt.Text = "";
+        }
+
+        private void ReadSubscription_Click(object sender, RoutedEventArgs e)
+        {
+            ServiceBusUtils.ReceiveMessageFromSubscription(UpdateSubscriptionUI);
+        }
+
+        private void UpdateSubscriptionUI(string text)
+        {
+            _ = Windows.ApplicationModel.Core.CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+               () =>
+               {
+                   ReadSubscriptionItems.Add(text);
+               });
+        }
     }
 }
