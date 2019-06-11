@@ -8,7 +8,7 @@ namespace ServiceBusLib
 {
     public static class ServiceBusUtils
     {
-        const string ServiceBusConnectionString = "Endpoint=sb://emkaservicebusapp.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=tzOSSvOoEi4DocnUOCmNuHYBugPEUSfS/ByxUAylI7U=";
+        const string ServiceBusConnectionString = "";
         const string QueueName = "salesmessages";
         static IQueueClient queueClient;
 
