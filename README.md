@@ -9,3 +9,4 @@ My experiments with Azure:
 6. Durable Functions
 7. Azure Queue Storage 
 8. Azure Service Bus
+9. Azure Event Grid
