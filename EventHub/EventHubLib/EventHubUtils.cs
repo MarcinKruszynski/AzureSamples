@@ -9,12 +9,12 @@ namespace EventHubLib
     public static class EventHubUtils
     {
         private static EventHubClient eventHubClient;
-        private const string EventHubConnectionString = "Endpoint=sb://emkaeventhubs.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=t6mX1NA/qERr2NlZqrTfQCgtLox5AK19cCkqc87pgkc=";
+        private const string EventHubConnectionString = "";
         private const string EventHubName = "emkaeventhub";
 
         private const string StorageContainerName = "messages";
         private const string StorageAccountName = "emkastorage";
-        private const string StorageAccountKey = "2FjqLszywcq8I6jLEtfnAzddIdlebaJGdF2q7obUqZ139D8sZNId7XtzAK5Cf+/zzp/Xyj1c5B7oFfJTtHabiQ==";
+        private const string StorageAccountKey = "";
 
         private static readonly string StorageConnectionString = string.Format("DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1}", StorageAccountName, StorageAccountKey);
 
