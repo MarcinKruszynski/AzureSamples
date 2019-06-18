@@ -1,0 +1,18 @@
+﻿<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>ProductService</name>
+  </assembly>
+  <members>    
+    <member name="M:ProductService.Controllers.ProductsController.Get">
+      <summary>
+        Retrieve product list
+      </summary>
+    </member>
+    <member name="M:ProductService.Controllers.ProductsController.Get(System.Int32)">
+      <summary>
+        Find specified product
+      </summary>
+    </member>
+  </members>
+</doc>

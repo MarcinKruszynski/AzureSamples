@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -36,7 +37,10 @@ namespace ProductService
                     Version = "v1",
                     Description = "Products HTTP API.",
                     TermsOfService = "Terms Of Service"
-                });             
+                });
+                
+                var xmlFile = Path.ChangeExtension(typeof(Startup).Assembly.Location, ".xml");
+                options.IncludeXmlComments(xmlFile);
             });
         }
 
@@ -56,11 +60,14 @@ namespace ProductService
             app.UseHttpsRedirection();
             app.UseMvcWithDefaultRoute(); 
 
-            app.UseSwagger()
-              .UseSwaggerUI(c =>
-              {
-                  c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProductService API V1");                  
-              });
+            app.UseSwagger(c =>
+            {
+                c.PreSerializeFilters.Add((swaggerDoc, httpReq) => swaggerDoc.Host = httpReq.Host.Value);
+            });
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProductService API V1");                  
+            });
         }
     }
 }
