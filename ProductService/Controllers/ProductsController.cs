@@ -13,36 +13,18 @@ namespace ProductService.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        [HttpGet]
-        [Route("")]
-        [ProducesResponseType(typeof(IEnumerable<ProductItem>), (int)HttpStatusCode.OK)]
-        public IActionResult Get()
+        [HttpGet(Name = "GetProducts")]
+        public IEnumerable<ProductItem> Get()
         {
-            var items = Config.GetProductItems();
-
-            return Ok(items);
+            return Config.GetProductItems();            
         }
 
-        [HttpGet]
-        [Route("{id}")]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        [ProducesResponseType(typeof(ProductItem), (int)HttpStatusCode.OK)]
-        public IActionResult Get(int id)
+        [HttpGet("{id}", Name = "GetProductDetails")]
+        public ProductItem Get(int id)
         {
-            if (id <= 0)
-            {
-                return BadRequest();
-            }
-
             var items = Config.GetProductItems();
 
-            var item = items.SingleOrDefault(ci => ci.Id == id);
-            if (item != null)
-            {
-                return Ok(item);
-            }
-
-            return NotFound();
+            return items.SingleOrDefault(ci => ci.Id == id);            
         }
     }
 }
